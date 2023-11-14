@@ -24,7 +24,7 @@ export default class Modal extends Component {
     return createPortal(
       <Overlay>
         <ModalContainer>
-          <img src={largeImage} />
+          <img src={largeImage} alt=''/>
         </ModalContainer>
       </Overlay>,
       modalRoot
