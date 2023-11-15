@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { LoadButton } from './Button.styled'
 import api from 'api/imageService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class Button extends Component {
   handleClick = async e => {
@@ -11,6 +13,7 @@ export default class Button extends Component {
       onClick(images);
     } catch (error) {
       console.log(error);
+      toast.error(error.message)
     }
   }
 
