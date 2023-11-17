@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { BsSearch } from 'react-icons/bs'
+import { BsSearch } from 'react-icons/bs';
+import PropTypes from 'prop-types';
 import {
   SearchbarHeader,
   SearchbarForm,
@@ -7,33 +7,37 @@ import {
   SearchInput,
 } from './Searchbar.styled';
 
-export default class Searchbar extends Component {
-  handleSubmit = e => {
+export const Searchbar = ({ onSubmit }) => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     const { value } = e.currentTarget.query;
-    this.props.onSubmit(value.trim())
+    onSubmit(value.trim());
 
     e.currentTarget.reset();
-  }
+  };
 
-  render() {
-    return (
-      <SearchbarHeader>
-        <SearchbarForm onSubmit={this.handleSubmit}>
-          <SearchButton type="submit">
-            <BsSearch />
-          </SearchButton>
+  return (
+    <SearchbarHeader>
+      <SearchbarForm onSubmit={handleSubmit}>
+        <SearchButton type="submit">
+          <BsSearch />
+        </SearchButton>
 
-          <SearchInput
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            name='query'
-          />
-        </SearchbarForm>
-      </SearchbarHeader>
-    );
-  }
+        <SearchInput
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          name="query"
+        />
+      </SearchbarForm>
+    </SearchbarHeader>
+  );
+};
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 }
+
+export default Searchbar;
