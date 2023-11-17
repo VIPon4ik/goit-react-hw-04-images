@@ -16,7 +16,6 @@ export const App = () => {
   const [query, setQuery] = useState('');
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [totalHits, setTotalHits] = useState(null);
 
@@ -30,19 +29,17 @@ export const App = () => {
     if (inputQuery !== query && inputQuery.trim() !== '') {
       setQuery(inputQuery);
       setIsLoading(true);
-      setError(null);
       setImages([]);
       setTotalHits(null);
 
       try {
-        const [apiImages, totalHits] = await api.getImagesData(query);
+        const [apiImages, totalHits] = await api.getImagesData(inputQuery);
         setImages(apiImages);
         setTotalHits(totalHits);
         setPage(2);
       } catch (error) {
         console.log(error);
         toast.error(error.message);
-        setError(error);
       } finally {
         setIsLoading(false);
       }
