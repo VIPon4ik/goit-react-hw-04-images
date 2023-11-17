@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
-import { LoaderContainer } from './Loader.styled'
+import { LoaderContainer } from './Loader.styled';
 
-export default class Loader extends Component {
-  render() {
-    return (
-      <LoaderContainer >
-        <InfinitySpin />
-      </LoaderContainer>
-    );
-  }
-}
+export const Loader = () => {
+  return (
+    <LoaderContainer>
+      <InfinitySpin />
+    </LoaderContainer>
+  );
+};
+
+export default Loader;
