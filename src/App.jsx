@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Component } from 'react';
+import { useState } from 'react';
 import Searchbar from 'components/Searchbar/Searchbar';
 import { AppContainer } from 'App.styled';
 import ImageGallery from 'components/ImageGallery/ImageGallery';
@@ -12,49 +12,53 @@ import api from 'api/imageService';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
-export class App extends Component {
-  state = {
-    query: '',
-    images: [],
-    isLoading: false,
-    error: null,
-    page: 1,
-    totalHits: null,
+export const App = () => {
+  const [query, setQuery] = useState('');
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalHits, setTotalHits] = useState(null);
+
+  const handleLoad = images => {
+    setImages(img => [...img, ...images]);
+    setPage(page => page + 1);
+    scroll.animateScroll.scrollMore(650);
   };
 
-  handleLoad = images => {
-    this.setState(prevState => ({ images: [ ...prevState.images, ...images], page: prevState.page + 1}));
-    scroll.animateScroll.scrollMore(650);
-  }
-
-  handleSubmit = async query => {
-    if (query !== this.state.query && query.trim() !== '') {
-      this.setState({ query, isLoading: true, error: null, images: [], totalHits: null });
+  const handleSubmit = async inputQuery => {
+    if (inputQuery !== query && inputQuery.trim() !== '') {
+      setQuery(inputQuery);
+      setIsLoading(true);
+      setError(null);
+      setImages([]);
+      setTotalHits(null);
 
       try {
-        const [images, totalHits] = await api.getImagesData(query);
-        this.setState({ images, totalHits, page: 2 });
+        const [apiImages, totalHits] = await api.getImagesData(query);
+        setImages(apiImages);
+        setTotalHits(totalHits);
+        setPage(2);
       } catch (error) {
         console.log(error);
-        toast.error(error.message)
-        this.setState({ error });
+        toast.error(error.message);
+        setError(error);
       } finally {
-        this.setState({ isLoading: false });
+        setIsLoading(false);
       }
     }
   };
- 
-  render() {
-    const { query, images, page, totalHits, isLoading } = this.state;
-    return (
-      <AppContainer>
-        <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery images={images} /> 
 
-        {isLoading && <Loader />}
-        {(page - 1) * 12 < totalHits && <Button onClick={this.handleLoad} page={page} query={query} />}
-        <ToastContainer position='top-center' autoClose='1000' />
-      </AppContainer>
-    );
-  }
-}
+  return (
+    <AppContainer>
+      <Searchbar onSubmit={handleSubmit} />
+      <ImageGallery images={images} />
+
+      {isLoading && <Loader />}
+      {(page - 1) * 12 < totalHits && (
+        <Button onClick={handleLoad} page={page} query={query} />
+      )}
+      <ToastContainer position="top-center" autoClose="1000" />
+    </AppContainer>
+  );
+};
